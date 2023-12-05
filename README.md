@@ -43,7 +43,7 @@ self._lists = {
                 "198.18.0.0/15", "198.51.100.0/24", "203.0.113.0/24", "224.0.0.0/4", "240.0.0.0/4"],
 ```
 
-## Method 1 - Redirects *(Failed)*
+## Exploitation 1 - Redirects *(Failed)*
 The proxy service is configured to allow redirects, so it's the first thing that I tried.
 ```py
 try:
@@ -62,9 +62,13 @@ def pwn():
 ```
 This was a failure because safeurl continuously validates the redirect URLs. The algorithm can be found [here](https://github.com/IncludeSecurity/safeurl-python/blob/main/safeurl/safeurl.py#L643-L677).
 
-## Method 2 - SSTI *(Failed)*
-In the Flask app that I set up on https://www.pythonanywhere.com/, I created routes that would return `7*7` and `{{7*7}}`. I gave up immediately after both didn't work.
+## Exploitation 2 - SSTI *(Failed)*
+In the Flask app that I set up on https://www.pythonanywhere.com/, I created routes that would return `7*7` and `{{7*7}}`. I gave up immediately after both didn't work. Another setback.
 
-## Method 3 - Shortened URL *(Success)*
-TODO
+## Exploitation 3 - Shortened URL *(Success)*
+With my repertoire of known tricks depleted, I resorted to a method that would at least bypass the whitelist and blacklist checks of SafeURL -- URL shortening. Consequently, I navigated to https://www.shorturl.at/ and shortened the loopback address http://127.0.0.1:1337/secret. Upon testing the shortened URL against the proxy service, I successfully captured the flag!
+
 ![127 0 0 1_1337_(Nest Hub)](https://github.com/patzj/HTB-Challenges-Web-Saturn/assets/10325457/8602fab4-aa77-4486-a2b6-f0466ef9a72c)
+
+## Post-Exploitation
+There's nothing post-exploit, really, but I'm more curious than surprised. I don't understand why or how the shortened URL works. I guess I'll have to delve into this writeup and figure it out.
